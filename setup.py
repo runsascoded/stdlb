@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(
-    name="std",
+    name="stdlb",
     version="0.0.1",
-    packages=["std"],
+    packages=["stdlb"],
     license="MIT",
     author="Ryan Williams <ryan@runsascoded.com>",
     description="Wildcard-import the Python standard library",
