@@ -27,21 +27,27 @@ from stdlb import *
 ```
 
 ### Collisions / Aliases
-In a few cases, a top-level standard library module also contains a member with the same name (e.g. `datetime`, `shlex`). `stdlb` makes an effort to ensure the module "wins" in this case:
+In a few cases, a top-level standard library module also contains a member with the same name (e.g. `datetime`, `shlex`, `time`). `stdlb` makes an effort to ensure the module "wins" in this case:
 
 ```python
 from stdlb import *
 
-datetime
-# <module 'datetime' from '$PYTHON_HOME/lib/python3.9/datetime.py'>
-shlex
-# <module 'shlex' from '$PYTHON_HOME/lib/python3.9/shlex.py'>
+datetime  # <module 'datetime' from '$PYTHON_HOME/lib/python3.9/datetime.py'>
+shlex     # <module 'shlex' from '$PYTHON_HOME/lib/python3.9/shlex.py'>
+time      # <module 'time' (built-in)>
 ```
 
-For convenience, `datetime.datetime` is also exposed as `dt`:
+A few names are disambiguated with the most sensible-seeming defaults:
 ```python
-dt.now()
-# datetime.datetime(2023, 8, 3, 10, 9, 43, 981458)
+path  # resolves to os.path, not sys.path
+join  # os.path.join, not shlex.join
+```
+
+For convenience, `datetime.datetime` is also exposed as `dt`, and a few of its members are exported directly:
+```python
+dt.now()       # datetime.datetime(2023, 8, 3, 10, 9, 43, 981458)
+fromtimestamp  # datetime.datetime.fromtimestamp
+fromisoformat  # datetime.datetime.fromisoformat
 ```
 
 ### Custom `cached_property`

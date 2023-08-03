@@ -52,12 +52,14 @@ import shlex
 
 import shutil
 from shutil import *
+join = os.path.join  # seems like a better default than shlex.join
 
 import subprocess
 from subprocess import *
 
 import sys
 from sys import *
+path = os.path
 
 import tempfile
 from tempfile import *
