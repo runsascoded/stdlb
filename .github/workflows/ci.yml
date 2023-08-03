@@ -1,0 +1,22 @@
+name: Release
+on:
+  push:
+    tags: [ "v**" ]
+jobs:
+  ci:
+    name: Test, Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install
+        run: pip install -e . setuptools twine
+      - name: Build
+        run: python setup.py sdist bdist_wheel
+      - name: Release
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: twine upload dist/*
