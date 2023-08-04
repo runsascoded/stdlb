@@ -39,6 +39,7 @@ from math import *
 
 import os
 from os import *
+open = __builtins__['open']
 from os.path import *
 
 import pathlib
