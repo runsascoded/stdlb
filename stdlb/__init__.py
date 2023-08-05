@@ -28,6 +28,7 @@ from hashlib import *
 
 import io
 from io import *
+BlockingIOError = __builtins__['BlockingIOError']
 
 import itertools
 from itertools import *
@@ -36,6 +37,7 @@ import json
 
 import math
 from math import *
+pow = __builtins__['pow']
 
 import os
 from os import *
@@ -47,6 +49,7 @@ from pathlib import *
 
 import re
 from re import *
+compile = __builtins__['compile']
 
 from shlex import *
 import shlex
@@ -61,6 +64,7 @@ from subprocess import *
 import sys
 from sys import *
 path = os.path
+copyright = __builtins__['copyright']
 
 import tempfile
 from tempfile import *
