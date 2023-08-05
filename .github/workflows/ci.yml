@@ -1,11 +1,14 @@
-name: Build, test, release
+name: Test / Release
 on:
   push:
+    branches: [ "main" ]
     tags: [ "v**" ]
+  pull_request:
+    branches: [ "**" ]
   workflow_dispatch:
 jobs:
-  ci:
-    name: Build, test, release
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,12 +23,24 @@ jobs:
           python -m ipykernel install --user --name python3
       - name: Run test
         run: papermill test.ipynb test.ipynb
-      - name: Build, release
-        if: startsWith(github.ref, 'refs/tags/')
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install release deps
+        run: pip install setuptools twine wheel
+      - name: Install stdlb
+        run: pip install -e .
+      - name: Build release
+        run: python setup.py sdist bdist_wheel
+      - name: Publish release
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          pip install setuptools twine wheel
-          python setup.py sdist bdist_wheel
-          twine upload dist/*
+        run: twine upload dist/*
