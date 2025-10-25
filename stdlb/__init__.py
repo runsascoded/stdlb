@@ -131,6 +131,7 @@ from operator import *
 import os as _module_os
 from os import *
 os = _module_os
+from os.path import *
 
 import pathlib
 from pathlib import *
@@ -228,6 +229,7 @@ from unicodedata import *
 
 import urllib
 from urllib import *
+from urllib.parse import *
 
 import uuid
 from uuid import *

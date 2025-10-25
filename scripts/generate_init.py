@@ -40,14 +40,11 @@ COLLISION_PREFERENCES = {
     'join': 'os.path.join',  # prefer os.path.join over shlex.join
 }
 
-# Modules with useful submodules to import
-IMPORT_SUBMODULES = {
-    'urllib': ['parse', 'request', 'error'],
-    'os': ['path'],
-    'collections': ['abc'],
-    'html': ['parser', 'entities'],
-    'http': ['client', 'server', 'cookies'],
-    'xml': ['etree'],
+# Modules that should have their submodule members imported
+# Format: {module: [submodules]} where we'll do "from module.submodule import *"
+IMPORT_SUBMODULE_MEMBERS = {
+    'os': ['path'],      # import basename, dirname, etc. from os.path
+    'urllib': ['parse'], # import urlparse, urlencode, etc. from urllib.parse
 }
 
 
@@ -90,6 +87,11 @@ def generate_module_imports(modules: List[str]) -> str:
             else:
                 lines.append(f"import {module}")
                 lines.append(f"from {module} import *")
+
+            # Import submodule members if specified
+            if module in IMPORT_SUBMODULE_MEMBERS:
+                for submodule in IMPORT_SUBMODULE_MEMBERS[module]:
+                    lines.append(f"from {module}.{submodule} import *")
 
             lines.append("")
 
