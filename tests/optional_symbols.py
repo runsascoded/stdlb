@@ -84,10 +84,10 @@ OPTIONAL_SYMBOLS = {
         'module': 'binascii',
         'reason': 'BinHex encoding (macOS Classic)'
     },
-    'rldecode_hqx': {
-        'platforms': ['darwin'],
+    'rledecode_hqx': {
+        'removed_in': (3, 11),
         'module': 'binascii',
-        'reason': 'BinHex run-length decoding (macOS Classic)'
+        'reason': 'BinHex run-length decoding (removed in 3.11+)'
     },
     'rlecode_hqx': {
         'platforms': ['darwin'],
@@ -108,6 +108,63 @@ OPTIONAL_SYMBOLS = {
         'platforms': ['darwin'],
         'module': 'os',
         'reason': 'Change symlink permissions (macOS/BSD only)'
+    },
+
+    # Unix-only symbols (not on Windows)
+    'AbstractChildWatcher': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'asyncio',
+        'reason': 'Unix-only asyncio child watcher'
+    },
+    'FastChildWatcher': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'asyncio',
+        'reason': 'Unix-only asyncio child watcher'
+    },
+    'MultiLoopChildWatcher': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'asyncio',
+        'reason': 'Unix-only asyncio child watcher'
+    },
+    'SafeChildWatcher': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'asyncio',
+        'reason': 'Unix-only asyncio child watcher'
+    },
+    'ThreadedChildWatcher': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'asyncio',
+        'reason': 'Unix-only asyncio child watcher'
+    },
+    'PidfdChildWatcher': {
+        'platforms': ['linux'],
+        'module': 'asyncio',
+        'reason': 'Linux-only asyncio child watcher (uses pidfd)'
+    },
+    'ItimerError': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'signal',
+        'reason': 'Unix-only interval timer exception'
+    },
+    'NGROUPS_MAX': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'posix',
+        'reason': 'Unix-only max supplementary groups constant'
+    },
+
+    # Common Unix-only functions (os/posix module)
+    # Note: There are many more - these are the most common ones.
+    # Pattern: Functions that start with these prefixes are likely Unix-only:
+    # clock_, conf, get/set (process/user/group related), chroot, etc.
+    'Sigmasks': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'signal',
+        'reason': 'Unix-only signal mask enumeration'
+    },
+    'abiflags': {
+        'platforms': ['darwin', 'linux'],
+        'module': 'sys',
+        'reason': 'Unix-only ABI flags string'
     },
 }
 
