@@ -8,6 +8,9 @@ import sys
 import pathlib
 import pytest
 
+# Import optional symbols configuration
+from .optional_symbols import get_optional_symbol_names
+
 # Import at module level
 from stdlb import *
 
@@ -42,22 +45,8 @@ def test_all_expected_symbols_present():
         'O_', 'PF_', 'SCM_', 'LOCAL_', 'SYSPROTO_',
     )
 
-    # Version/platform-specific symbols that may not exist everywhere
-    optional_symbols = {
-        # Python version differences
-        'NameConstant', 'Num', 'Str',  # ast, removed in 3.12+
-        'SafeConfigParser',  # configparser, removed in 3.12+
-        'LegacyInterpolation',  # configparser, removed in 3.13+
-        'enable_shared_cache',  # sqlite3, removed in 3.13+
-        'format', 'resetlocale',  # locale, removed in 3.13+
-        'template',  # re, removed in 3.13+
-        # macOS-specific
-        'Bytes', 'Ellipsis',
-        'a2b_hqx', 'b2a_hqx', 'rldecode_hqx', 'rlecode_hqx',  # binascii
-        'chflags', 'lchflags', 'lchmod',  # os
-        # Version-specific additions
-        'ALLOW_MISSING',  # genericpath, added in 3.12+
-    }
+    # Get optional symbols (documented in tests/optional_symbols.py)
+    optional_symbols = get_optional_symbol_names()
 
     missing = []
     for name in expected:
@@ -104,22 +93,8 @@ def test_no_unexpected_removals():
         'O_', 'PF_', 'SCM_', 'LOCAL_', 'SYSPROTO_',
     )
 
-    # Version/platform-specific symbols that may not exist everywhere
-    optional_symbols = {
-        # Python version differences
-        'NameConstant', 'Num', 'Str',  # ast, removed in 3.12+
-        'SafeConfigParser',  # configparser, removed in 3.12+
-        'LegacyInterpolation',  # configparser, removed in 3.13+
-        'enable_shared_cache',  # sqlite3, removed in 3.13+
-        'format', 'resetlocale',  # locale, removed in 3.13+
-        'template',  # re, removed in 3.13+
-        # macOS-specific
-        'Bytes', 'Ellipsis',
-        'a2b_hqx', 'b2a_hqx', 'rldecode_hqx', 'rlecode_hqx',  # binascii
-        'chflags', 'lchflags', 'lchmod',  # os
-        # Version-specific additions
-        'ALLOW_MISSING',  # genericpath, added in 3.12+
-    }
+    # Get optional symbols (documented in tests/optional_symbols.py)
+    optional_symbols = get_optional_symbol_names()
 
     # Filter out platform-specific symbols
     removed = {
