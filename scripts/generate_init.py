@@ -142,7 +142,6 @@ def generate_custom_imports() -> str:
     """Generate custom imports (e.g., cached_property)."""
     return """# Custom implementations
 from .cached_property import cached_property
-
 """
 
 

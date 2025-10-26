@@ -16,10 +16,11 @@ dumps(data)  # json.dumps
 ```
 
 **Features:**
-- 🎯 **Comprehensive coverage**: 79+ stdlib modules available (up from ~20 in earlier versions)
+- 🎯 **Comprehensive coverage**: 2127 symbols from 79+ stdlib modules (up from 841 symbols in v0.0.4)
 - 🐍 **Python 3.10-3.13 support**: Automatically includes version-specific modules
-- ⚡ **Fast**: Imports in ~2ms
+- ⚡ **Fast**: Imports in ~57ms
 - 🔒 **Safe**: Preserves all `__builtins__`, resolves name collisions intelligently
+- 🧪 **Well-tested**: Snapshot testing tracks all exports to prevent regressions
 
 - [Install](#install)
 - [Coverage](#coverage)
@@ -74,13 +75,7 @@ pip install stdlb
 ## Notes <a id="notes"></a>
 I've found this especially useful in Jupyter notebooks, where I don't have an easy "add `import` statements as I add code" setup.
 
-Importing seems to take a few milliseconds (on my Macbook Air):
-```ipython
-%%time
-from stdlb import *
-# CPU times: user 914 µs, sys: 397 µs, total: 1.31 ms
-# Wall time: 1.6 ms
-```
+Import time is reasonable (~57ms) for the comprehensive coverage provided. See `scripts/benchmark_import.py` for detailed measurements.
 
 ### Collision Resolution <a id="collisions"></a>
 
@@ -107,9 +102,15 @@ time      # <module 'time' (built-in)>
 
 A few names are disambiguated with the most sensible-seeming defaults:
 ```python
-path  # resolves to os.path, not sys.path
-join  # os.path.join, not shlex.join
+path     # resolves to os.path, not sys.path
+join     # os.path.join, not shlex.join
+Path     # pathlib.Path, not zipfile.Path
+error    # re.error, not zlib.error
+compress # itertools.compress, not zlib.compress
+repeat   # itertools.repeat, not timeit.repeat
 ```
+
+Use `scripts/compare_versions.py` to compare exports between versions and identify collisions.
 
 ### Aliases <a id="aliases"></a>
 
@@ -121,7 +122,7 @@ fromisoformat  # datetime.datetime.fromisoformat
 ```
 
 ### Custom `cached_property` <a id="cached-property"></a>
-One additional bit of functionality is [this custom `cached_property` decorator](stdlb/cached_property.py), which omits an unnecessary/unserializable lock found in `functools.cached_property`. [cpython#87634](https://github.com/python/cpython/issues/87634) has more info, seems like [a fix is coming in Python 3.12](https://github.com/python/cpython/issues/87634#issuecomment-1467140709).
+One additional bit of functionality is [this custom `cached_property` decorator](src/stdlb/cached_property.py), which omits an unnecessary/unserializable lock found in `functools.cached_property`. [cpython#87634](https://github.com/python/cpython/issues/87634) has more info, seems like [a fix is coming in Python 3.12](https://github.com/python/cpython/issues/87634#issuecomment-1467140709).
 
 ## Development <a id="development"></a>
 
@@ -138,11 +139,35 @@ uv run pytest tests/ -v
 for v in .venv/3.*/bin/python; do $v scripts/quick_test.py; done
 
 # Regenerate __init__.py (if needed)
-uv run python scripts/generate_init.py > stdlb/__init__.py
+python scripts/generate_init.py > src/stdlb/__init__.py
+
+# Update exports snapshot
+python scripts/snapshot_exports.py
+
+# Compare versions to check for regressions
+python scripts/compare_versions.py v0.0.4 HEAD
 ```
 
-### Scripts
+### Helper Scripts
 
-- `scripts/discover_stdlib.py`: Analyze the stdlib and identify modules to include
-- `scripts/generate_init.py`: Generate `stdlb/__init__.py` from stdlib discovery
-- `scripts/quick_test.py`: Quick functionality test across Python versions
+#### Code Generation
+- **`scripts/discover_stdlib.py`**: Analyze the stdlib and identify useful modules to include
+- **`scripts/generate_init.py`**: Generate `src/stdlb/__init__.py` from configuration
+  - Handles version-specific imports, module preservation, collision resolution
+  - Configuration in `VERSION_REQUIREMENTS`, `PRESERVE_MODULE`, `COLLISION_PREFERENCES`
+
+#### Testing & Quality Assurance
+- **`scripts/quick_test.py`**: Quick functionality test across Python versions
+- **`scripts/benchmark_import.py`**: Measure import time performance
+- **`scripts/snapshot_exports.py`**: Generate JSON snapshot of all exported symbols
+  - Output: `tests/exports_snapshot.json` (2127 symbols tracked)
+  - Used by `tests/test_exports_snapshot.py` for regression detection
+- **`scripts/compare_versions.py`**: Compare exports between git refs
+  ```bash
+  # Compare any two versions
+  python scripts/compare_versions.py v0.0.4 v0.1.0
+  python scripts/compare_versions.py <old-ref> <new-ref>
+
+  # Show only FQN changes (collisions)
+  python scripts/compare_versions.py v0.0.4 HEAD 2>/dev/null | grep -A 50 "Changed FQN"
+  ```
