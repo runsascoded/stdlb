@@ -292,8 +292,12 @@ fromtimestamp = dt.fromtimestamp
 fromisoformat = dt.fromisoformat
 
 # Collision resolution preferences
+Path = pathlib.Path
+compress = itertools.compress
+error = re.error
 join = os.path.join
 path = os.path
+repeat = itertools.repeat
 
 # Custom implementations
 from .cached_property import cached_property

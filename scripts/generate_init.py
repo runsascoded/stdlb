@@ -38,6 +38,10 @@ PRESERVE_BUILTINS = {
 COLLISION_PREFERENCES = {
     'path': 'os.path',  # prefer os.path over sys.path
     'join': 'os.path.join',  # prefer os.path.join over shlex.join
+    'Path': 'pathlib.Path',  # prefer pathlib.Path over zipfile.Path
+    'error': 're.error',  # prefer re.error over zlib.error
+    'compress': 'itertools.compress',  # prefer itertools.compress over zlib.compress
+    'repeat': 'itertools.repeat',  # prefer itertools.repeat over timeit.repeat
 }
 
 # Modules that should have their submodule members imported
