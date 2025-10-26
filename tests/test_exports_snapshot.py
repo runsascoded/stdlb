@@ -38,8 +38,18 @@ def test_all_expected_symbols_present():
     # Platform-specific prefixes that may not exist on all systems
     platform_specific_prefixes = (
         'AF_', 'AI_', 'EAI_', 'IPPROTO_', 'IP_', 'IPV6_', 'SO_',
-        'MSG_', 'NI_', 'SHUT_', 'TCP_', 'CLOCK_', 'SIG_',
+        'MSG_', 'NI_', 'SHUT_', 'TCP_', 'CLOCK_', 'SIG',
+        'O_', 'PF_', 'SCM_', 'LOCAL_', 'SYSPROTO_',
     )
+
+    # Version/platform-specific symbols that may not exist everywhere
+    optional_symbols = {
+        # Python version differences (removed in 3.12+)
+        'NameConstant', 'Num', 'Str', 'SafeConfigParser',
+        # macOS-specific
+        'Bytes', 'Ellipsis', 'a2b_hqx', 'b2a_hqx', 'chflags', 'lchflags', 'lchmod',
+        'rldecode_hqx', 'rlecode_hqx',
+    }
 
     missing = []
     for name in expected:
@@ -47,8 +57,8 @@ def test_all_expected_symbols_present():
             # Allow platform-specific symbols to be missing
             if name.startswith(platform_specific_prefixes):
                 continue
-            # Also allow some other known platform-specific symbols
-            if name in ('Bytes', 'Ellipsis'):  # macOS-specific or version-specific
+            # Allow known optional symbols
+            if name in optional_symbols:
                 continue
             missing.append(name)
 
@@ -82,14 +92,24 @@ def test_no_unexpected_removals():
     # Platform-specific prefixes that may not exist on all systems
     platform_specific_prefixes = (
         'AF_', 'AI_', 'EAI_', 'IPPROTO_', 'IP_', 'IPV6_', 'SO_',
-        'MSG_', 'NI_', 'SHUT_', 'TCP_', 'CLOCK_', 'SIG_',
+        'MSG_', 'NI_', 'SHUT_', 'TCP_', 'CLOCK_', 'SIG',
+        'O_', 'PF_', 'SCM_', 'LOCAL_', 'SYSPROTO_',
     )
+
+    # Version/platform-specific symbols that may not exist everywhere
+    optional_symbols = {
+        # Python version differences (removed in 3.12+)
+        'NameConstant', 'Num', 'Str', 'SafeConfigParser',
+        # macOS-specific
+        'Bytes', 'Ellipsis', 'a2b_hqx', 'b2a_hqx', 'chflags', 'lchflags', 'lchmod',
+        'rldecode_hqx', 'rlecode_hqx',
+    }
 
     # Filter out platform-specific symbols
     removed = {
         name for name in removed
         if not name.startswith(platform_specific_prefixes)
-        and name not in ('Bytes', 'Ellipsis')
+        and name not in optional_symbols
     }
 
     if removed:
