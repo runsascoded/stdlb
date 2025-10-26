@@ -72,6 +72,15 @@ pip install stdlb
 - **Python 3.9+**: `graphlib`, `zoneinfo`
 - **Python 3.11+**: `tomllib`
 
+### Platform-specific symbols
+
+Some symbols vary by platform, particularly in `socket`, `signal`, and `os`:
+- **Socket constants**: `AF_*`, `IPPROTO_*`, `SO_*`, etc. (vary by OS)
+- **Signal constants**: `SIG*` (vary by OS)
+- **Clock constants**: `CLOCK_*` (vary by OS)
+
+The library exports whatever is available on your platform. Snapshot tests are lenient about these platform-specific symbols.
+
 ## Notes <a id="notes"></a>
 I've found this especially useful in Jupyter notebooks, where I don't have an easy "add `import` statements as I add code" setup.
 
