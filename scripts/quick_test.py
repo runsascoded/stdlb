@@ -31,7 +31,13 @@ assert pow == builtins_dict['pow'], "pow() should be builtin"
 
 # Collision resolution
 assert hasattr(path, 'join'), "path should be os.path"
-assert join('/foo', 'bar') in ['/foo/bar', '\\foo\\bar'], "join should be os.path.join"
+result = join('/foo', 'bar')
+if sys.platform == 'win32':
+    # Windows preserves forward slash in first arg but joins with backslash
+    assert result == '/foo\\bar', f"Expected '/foo\\bar' on Windows, got {result!r}"
+else:
+    # Unix uses forward slashes
+    assert result == '/foo/bar', f"Expected '/foo/bar' on Unix, got {result!r}"
 
 # Version-specific features
 if sys.version_info >= (3, 11):
@@ -46,4 +52,4 @@ if sys.version_info >= (3, 9):
     except ImportError as e:
         raise AssertionError(f"graphlib/zoneinfo should be available in 3.9+: {e}")
 
-print("✓ All tests passed")
+print("All tests passed")
