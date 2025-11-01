@@ -131,6 +131,7 @@ from operator import *
 import os as _module_os
 from os import *
 os = _module_os
+from os.path import *
 
 import pathlib
 from pathlib import *
@@ -228,6 +229,7 @@ from unicodedata import *
 
 import urllib
 from urllib import *
+from urllib.parse import *
 
 import uuid
 from uuid import *
@@ -290,10 +292,13 @@ fromtimestamp = dt.fromtimestamp
 fromisoformat = dt.fromisoformat
 
 # Collision resolution preferences
+Path = pathlib.Path
+compress = itertools.compress
+error = re.error
 join = os.path.join
 path = os.path
+repeat = itertools.repeat
 
 # Custom implementations
 from .cached_property import cached_property
-
 

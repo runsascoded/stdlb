@@ -40,7 +40,12 @@ def test_collision_resolution():
 
     # join should be os.path.join, not shlex.join
     result = join('/foo', 'bar')
-    assert result == '/foo/bar' or result == '\\foo\\bar'  # Unix or Windows
+    if sys.platform == 'win32':
+        # Windows preserves forward slash in first arg but joins with backslash
+        assert result == '/foo\\bar', f"Expected '/foo\\bar' on Windows, got {result!r}"
+    else:
+        # Unix uses forward slashes
+        assert result == '/foo/bar', f"Expected '/foo/bar' on Unix, got {result!r}"
 
 
 def test_datetime_aliases():

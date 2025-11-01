@@ -38,16 +38,17 @@ PRESERVE_BUILTINS = {
 COLLISION_PREFERENCES = {
     'path': 'os.path',  # prefer os.path over sys.path
     'join': 'os.path.join',  # prefer os.path.join over shlex.join
+    'Path': 'pathlib.Path',  # prefer pathlib.Path over zipfile.Path
+    'error': 're.error',  # prefer re.error over zlib.error
+    'compress': 'itertools.compress',  # prefer itertools.compress over zlib.compress
+    'repeat': 'itertools.repeat',  # prefer itertools.repeat over timeit.repeat
 }
 
-# Modules with useful submodules to import
-IMPORT_SUBMODULES = {
-    'urllib': ['parse', 'request', 'error'],
-    'os': ['path'],
-    'collections': ['abc'],
-    'html': ['parser', 'entities'],
-    'http': ['client', 'server', 'cookies'],
-    'xml': ['etree'],
+# Modules that should have their submodule members imported
+# Format: {module: [submodules]} where we'll do "from module.submodule import *"
+IMPORT_SUBMODULE_MEMBERS = {
+    'os': ['path'],      # import basename, dirname, etc. from os.path
+    'urllib': ['parse'], # import urlparse, urlencode, etc. from urllib.parse
 }
 
 
@@ -90,6 +91,11 @@ def generate_module_imports(modules: List[str]) -> str:
             else:
                 lines.append(f"import {module}")
                 lines.append(f"from {module} import *")
+
+            # Import submodule members if specified
+            if module in IMPORT_SUBMODULE_MEMBERS:
+                for submodule in IMPORT_SUBMODULE_MEMBERS[module]:
+                    lines.append(f"from {module}.{submodule} import *")
 
             lines.append("")
 
@@ -136,7 +142,6 @@ def generate_custom_imports() -> str:
     """Generate custom imports (e.g., cached_property)."""
     return """# Custom implementations
 from .cached_property import cached_property
-
 """
 
 
